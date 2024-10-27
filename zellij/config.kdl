@@ -288,7 +288,7 @@ plugins {
 // The name of the default layout to load on startup
 // Default: "default"
 //
-default_layout "yazelix"
+default_layout "abyazelix"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal
@@ -350,7 +350,7 @@ scrollback_editor "hx"
 
 // The folder in which Zellij will look for layouts
 // here you can set the absolute path to layout dir
-// layout_dir "/home/my_username/.config/yazelix/zellij/layouts"
+// layout_dir "/home/my_username/.config/abyazelix/zellij/layouts"
 
 // The folder in which Zellij will look for themes
 //
