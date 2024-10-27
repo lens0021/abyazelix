@@ -26,11 +26,9 @@ Abyazelix integrates yazi, zellij and helix, hence the name, get it?
 - The opening of files in a helix buffer implementation works but feels like a workaround. But it does not matter much. Helix will get a plugin system and then a file tree plugin probably between the beginning and middle of 2025 anyaways.. 
 
 ### Similar projects
-- [Shelix](https://github.com/webdev23/shelix) 
-  - Shelix does intend to maximize the hidden power of Tmux as an IDE, enhance capabilities of the incredibly efficient Helix editor, around an interactive menu that performs IDE related actions 
-  - as of 31/06/2024, it has been 4 months since last commit
-- [Helix-Wezterm](https://github.com/quantonganh/helix-wezterm):Turning Helix into an IDE with the help of WezTerm and CLI tools
-  - as of 31/06/2024, it has been 3 weeks since last commit
+- [Yazelix](https://github.com/luccahuguet/yazelix)
+  - Abyazelix is a fork of Yazelix.
+- [Zelix](https://github.com/cfuehrmann/zelix)
+- [Shelix](https://github.com/webdev23/shelix)
 - [File tree picker in Helix with Zellij](https://yazi-rs.github.io/docs/tips/#helix-with-zellij) 
   - Yazi can be used as a file picker to browse and open file(s) in your current Helix instance (running in a Zellij session)
-
