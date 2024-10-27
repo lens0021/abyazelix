@@ -1,6 +1,7 @@
 # yazi.toml
 
 [manager]
+# 0/4 width for parent, 4/4 width for current, 0/4 width for preview
 ratio = [0, 4, 0]
 
 [opener]

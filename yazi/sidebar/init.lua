@@ -1,3 +1,4 @@
+--- Makes the status bar way more readable (but you don't need lua as a dependency, so no worries)
 function Status:render(area)
 	self.area = area
 
