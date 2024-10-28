@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Written in [Amber](https://amber-lang.com/)
 # version: 0.3.5-alpha
-# date: 2024-10-27 17:39:15
+# date: 2024-10-28 11:43:53
 contains__15_v0() {
     local text=$1
     local phrase=$2
@@ -229,7 +229,7 @@ else
         exit $__AS
     fi
     working_dir=$(if [ "$__AF_dir_exist26_v0__43_27" != 0 ]; then echo "${path}"; else echo "${__AMBER_VAL_8}"; fi)
-    zellij_write_chars__100_v0 "hx ${path} -w ${working_dir}"
+    zellij_write_chars__100_v0 "cd ${working_dir}; hx ${path} -w ${working_dir}"
     __AS=$?
     if [ $__AS != 0 ]; then
 

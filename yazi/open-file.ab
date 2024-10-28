@@ -41,7 +41,7 @@ main(args) {
         $sleep 0.4$?
         // Get the working directory
         let working_dir = dir_exist(path) then path else $dirname "{path}"$?
-        zellij_write_chars("hx {path} -w {working_dir}")?
+        zellij_write_chars("cd {working_dir}; hx {path} -w {working_dir}")?
     }
 }
 
