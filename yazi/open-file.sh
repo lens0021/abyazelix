@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Written in [Amber](https://amber-lang.com/)
 # version: 0.3.5-alpha
-# date: 2024-10-28 11:43:53
+# date: 2024-10-31 11:20:07
 contains__15_v0() {
     local text=$1
     local phrase=$2
@@ -88,101 +88,179 @@ get_env_var__73_v0() {
     __AF_get_env_var73_v0=""
     return 0
 }
-zellij_current_tab__99_v0() {
-    __AMBER_VAL_5=$(zellij action dump-layout)
+log__99_v0() {
+    local log=$1
+    get_env_var__73_v0 "HOME" ".env"
+    __AF_get_env_var73_v0__6_16="${__AF_get_env_var73_v0}"
+    local path="${__AF_get_env_var73_v0__6_16}""/.config/abyazelix/debug.log"
+    file_exist__27_v0 "${path}"
+    __AF_file_exist27_v0__7_8="$__AF_file_exist27_v0"
+    if [ "$__AF_file_exist27_v0__7_8" != 0 ]; then
+        file_append__30_v0 "${path}" "${log}"
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_log99_v0=''
+            return $__AS
+        fi
+        __AF_file_append30_v0__7_26="${__AF_file_append30_v0}"
+        echo "${__AF_file_append30_v0__7_26}" >/dev/null 2>&1
+    else
+        file_write__29_v0 "${path}" "${log}"
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_log99_v0=''
+            return $__AS
+        fi
+        __AF_file_write29_v0__8_11="${__AF_file_write29_v0}"
+        echo "${__AF_file_write29_v0__8_11}" >/dev/null 2>&1
+    fi
+}
+random_text__100_v0() {
+    local len=$1
+    __AMBER_VAL_5=$(tr -dc a-z0-9 </dev/urandom | head -c ${len})
     __AS=$?
     if [ $__AS != 0 ]; then
-        __AF_zellij_current_tab99_v0=''
+        __AF_random_text100_v0=''
         return $__AS
     fi
-    local layout="${__AMBER_VAL_5}"
-    # Find the focused tab
-    __AMBER_VAL_6=$(echo -e "${layout}" | grep -E '^    tab.+focus=true' -A 1000 | grep '^    }' --max-count 1 -B 1000)
-    __AS=$?
-    if [ $__AS != 0 ]; then
-        __AF_zellij_current_tab99_v0=''
-        return $__AS
-    fi
-    layout="${__AMBER_VAL_6}"
-    # Remove indentation
-    __AMBER_VAL_7=$(echo -e "${layout}" | cut -d' ' -f5-)
-    __AS=$?
-    if [ $__AS != 0 ]; then
-        __AF_zellij_current_tab99_v0=''
-        return $__AS
-    fi
-    layout="${__AMBER_VAL_7}"
-    __AF_zellij_current_tab99_v0="${layout}"
+    __AF_random_text100_v0="${__AMBER_VAL_5}"
     return 0
 }
-zellij_write_chars__100_v0() {
+zellij_current_tab__101_v0() {
+    __AMBER_VAL_6=$(zellij action dump-layout)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_zellij_current_tab101_v0=''
+        return $__AS
+    fi
+    local layout="${__AMBER_VAL_6}"
+    # Find the focused tab
+    __AMBER_VAL_9=$(echo -e "${layout}" | grep -E '^    tab.+focus=true' -A 1000 | grep '^    }' --max-count 1 -B 1000)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        log__99_v0 "no focused"
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        __AF_log99_v0__19_9="$__AF_log99_v0"
+        echo "$__AF_log99_v0__19_9" >/dev/null 2>&1
+        random_text__100_v0 8
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        __AF_random_text100_v0__20_20="${__AF_random_text100_v0}"
+        local rand="${__AF_random_text100_v0__20_20}"
+        zellij action rename-tab ${rand}
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        zellij action dump-layout
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        zellij action focus-next-pane
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        log__99_v0 "${rand}"
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        __AF_log99_v0__24_9="$__AF_log99_v0"
+        echo "$__AF_log99_v0__24_9" >/dev/null 2>&1
+        __AMBER_VAL_7=$(echo -e "${layout}" | grep -E '^    tab.+name="')
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        log__99_v0 "${__AMBER_VAL_7}"
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        __AF_log99_v0__25_9="$__AF_log99_v0"
+        echo "$__AF_log99_v0__25_9" >/dev/null 2>&1
+        __AMBER_VAL_8=$(echo -e "${layout}" | grep -E '^    tab.+name="${rand}"' -A 1000 | grep '^    }' --max-count 1 -B 1000)
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+        layout="${__AMBER_VAL_8}"
+        zellij action undo-rename-tab
+        __AS=$?
+        if [ $__AS != 0 ]; then
+            __AF_zellij_current_tab101_v0=''
+            return $__AS
+        fi
+    fi
+    layout="${__AMBER_VAL_9}"
+    # Remove indentation
+    __AMBER_VAL_10=$(echo -e "${layout}" | cut -d' ' -f5-)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_zellij_current_tab101_v0=''
+        return $__AS
+    fi
+    layout="${__AMBER_VAL_10}"
+    __AF_zellij_current_tab101_v0="${layout}"
+    return 0
+}
+zellij_write_chars__102_v0() {
     local chars=$1
     zellij action write-chars "${chars}"
     __AS=$?
     if [ $__AS != 0 ]; then
-        __AF_zellij_write_chars100_v0=''
+        __AF_zellij_write_chars102_v0=''
         return $__AS
     fi
     zellij action write 13
     __AS=$?
     if [ $__AS != 0 ]; then
-        __AF_zellij_write_chars100_v0=''
+        __AF_zellij_write_chars102_v0=''
         return $__AS
-    fi
-}
-log__101_v0() {
-    local log=$1
-    get_env_var__73_v0 "HOME" ".env"
-    __AF_get_env_var73_v0__21_16="${__AF_get_env_var73_v0}"
-    local path="${__AF_get_env_var73_v0__21_16}""/.config/abyazelix/debug.log"
-    file_exist__27_v0 "${path}"
-    __AF_file_exist27_v0__22_8="$__AF_file_exist27_v0"
-    if [ "$__AF_file_exist27_v0__22_8" != 0 ]; then
-        file_append__30_v0 "${path}" "${log}"
-        __AS=$?
-        if [ $__AS != 0 ]; then
-            __AF_log101_v0=''
-            return $__AS
-        fi
-        __AF_file_append30_v0__22_26="${__AF_file_append30_v0}"
-        echo "${__AF_file_append30_v0__22_26}" >/dev/null 2>&1
-    else
-        file_write__29_v0 "${path}" "${log}"
-        __AS=$?
-        if [ $__AS != 0 ]; then
-            __AF_log101_v0=''
-            return $__AS
-        fi
-        __AF_file_write29_v0__23_11="${__AF_file_write29_v0}"
-        echo "${__AF_file_write29_v0__23_11}" >/dev/null 2>&1
     fi
 }
 args=("$0" "$@")
 path="${args[1]}"
-log__101_v0 "${path}"
+log__99_v0 "${path}"
 __AS=$?
 if [ $__AS != 0 ]; then
 
     exit $__AS
 fi
-__AF_log101_v0__28_5="$__AF_log101_v0"
-echo "$__AF_log101_v0__28_5" >/dev/null 2>&1
+__AF_log99_v0__42_5="$__AF_log99_v0"
+echo "$__AF_log99_v0__42_5" >/dev/null 2>&1
 if [ $(
     [ "_${path}" != "_" ]
     echo $?
 ) != 0 ]; then
     exit 1
 fi
-zellij_current_tab__99_v0
+zellij_current_tab__101_v0
 __AS=$?
 if [ $__AS != 0 ]; then
 
     exit $__AS
 fi
-__AF_zellij_current_tab99_v0__31_17="${__AF_zellij_current_tab99_v0}"
-contains__15_v0 "${__AF_zellij_current_tab99_v0__31_17}" " command=\"hx\" "
-__AF_contains15_v0__31_8="$__AF_contains15_v0"
-if [ "$__AF_contains15_v0__31_8" != 0 ]; then
+__AF_zellij_current_tab101_v0__45_17="${__AF_zellij_current_tab101_v0}"
+contains__15_v0 "${__AF_zellij_current_tab101_v0__45_17}" " command=\"hx\" "
+__AF_contains15_v0__45_8="$__AF_contains15_v0"
+if [ "$__AF_contains15_v0__45_8" != 0 ]; then
     # Move focus to the next pane
     zellij action focus-next-pane
     __AS=$?
@@ -197,14 +275,14 @@ if [ "$__AF_contains15_v0__31_8" != 0 ]; then
 
         exit $__AS
     fi
-    zellij_write_chars__100_v0 ":open \"${path}\""
+    zellij_write_chars__102_v0 ":open \"${path}\""
     __AS=$?
     if [ $__AS != 0 ]; then
 
         exit $__AS
     fi
-    __AF_zellij_write_chars100_v0__36_9="$__AF_zellij_write_chars100_v0"
-    echo "$__AF_zellij_write_chars100_v0__36_9" >/dev/null 2>&1
+    __AF_zellij_write_chars102_v0__50_9="$__AF_zellij_write_chars102_v0"
+    echo "$__AF_zellij_write_chars102_v0__50_9" >/dev/null 2>&1
 else
     # The current pane is not running helix, so open helix in a new pane
     zellij action new-pane
@@ -221,20 +299,20 @@ else
     fi
     # Get the working directory
     dir_exist__26_v0 "${path}"
-    __AF_dir_exist26_v0__43_27="$__AF_dir_exist26_v0"
-    __AMBER_VAL_8=$(dirname "${path}")
+    __AF_dir_exist26_v0__57_27="$__AF_dir_exist26_v0"
+    __AMBER_VAL_11=$(dirname "${path}")
     __AS=$?
     if [ $__AS != 0 ]; then
 
         exit $__AS
     fi
-    working_dir=$(if [ "$__AF_dir_exist26_v0__43_27" != 0 ]; then echo "${path}"; else echo "${__AMBER_VAL_8}"; fi)
-    zellij_write_chars__100_v0 "cd ${working_dir}; hx ${path} -w ${working_dir}"
+    working_dir=$(if [ "$__AF_dir_exist26_v0__57_27" != 0 ]; then echo "${path}"; else echo "${__AMBER_VAL_11}"; fi)
+    zellij_write_chars__102_v0 "cd ${working_dir}; hx ${path} -w ${working_dir}"
     __AS=$?
     if [ $__AS != 0 ]; then
 
         exit $__AS
     fi
-    __AF_zellij_write_chars100_v0__44_9="$__AF_zellij_write_chars100_v0"
-    echo "$__AF_zellij_write_chars100_v0__44_9" >/dev/null 2>&1
+    __AF_zellij_write_chars102_v0__58_9="$__AF_zellij_write_chars102_v0"
+    echo "$__AF_zellij_write_chars102_v0__58_9" >/dev/null 2>&1
 fi

@@ -2,10 +2,26 @@ import {contains} from "std/text"
 import {dir_exist, file_append, file_exist, file_write} from "std/fs"
 import {get_env_var} from "std/env"
 
+fun log(log: Text): Null? {
+    let path = get_env_var("HOME") + "/.config/abyazelix/debug.log"
+    if file_exist(path): file_append(path, log)?
+    else: file_write(path, log)?
+}
+
+fun random_text(len: Num = 8): Text? {
+    return $tr -dc a-z0-9 </dev/urandom | head -c {len}$?
+}
+
 fun zellij_current_tab(): Text? {
     let layout = $zellij action dump-layout$?
     // Find the focused tab
-    layout = $echo -e "{layout}" | grep -E '^    tab.+focus=true' -A 1000 | grep '^    }' --max-count 1 -B 1000$?
+    layout = $echo -e "{layout}" | grep -E '^    tab.+focus=true' -A 1000 | grep '^    }' --max-count 1 -B 1000$ failed {
+        log("no focused")?
+        let rand = random_text()?
+        $zellij action rename-tab {rand}$?
+        layout = $echo -e "{layout}" | grep -E '^    tab.+name="{rand}"' -A 1000 | grep '^    }' --max-count 1 -B 1000$?
+        $zellij action undo-rename-tab$?
+    }
     // Remove indentation
     layout = $echo -e "{layout}" | cut -d' ' -f5-$?
 
@@ -15,12 +31,6 @@ fun zellij_current_tab(): Text? {
 fun zellij_write_chars(chars: Text): Null? {
     $zellij action write-chars "{chars}"$?
     $zellij action write 13$?
-}
-
-fun log(log: Text): Null? {
-    let path = get_env_var("HOME") + "/.config/abyazelix/debug.log"
-    if file_exist(path): file_append(path, log)?
-    else: file_write(path, log)?
 }
 
 main(args) {
