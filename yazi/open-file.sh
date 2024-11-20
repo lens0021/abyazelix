@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Written in [Amber](https://amber-lang.com/)
 # version: 0.3.5-alpha
-# date: 2024-10-28 11:43:53
+# date: 2024-11-20 14:38:49
 contains__15_v0() {
     local text=$1
     local phrase=$2
@@ -115,58 +115,120 @@ zellij_current_tab__99_v0() {
     __AF_zellij_current_tab99_v0="${layout}"
     return 0
 }
-zellij_write_chars__100_v0() {
+zellij_current_pane__100_v0() {
+    zellij_current_tab__99_v0
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_zellij_current_pane100_v0=''
+        return $__AS
+    fi
+    __AF_zellij_current_tab99_v0__16_15="${__AF_zellij_current_tab99_v0}"
+    local tab="${__AF_zellij_current_tab99_v0__16_15}"
+    # Find the focused tab
+    __AMBER_VAL_8=$(echo -e "${tab}" | grep -E '^(    )+pane.+focus=true' -A 1000 | grep -E '^(    )+}' --max-count 1 -B 1000)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_zellij_current_pane100_v0=''
+        return $__AS
+    fi
+    tab="${__AMBER_VAL_8}"
+    # Remove indentation
+    __AMBER_VAL_9=$(echo -e "${tab}" | cut -d' ' -f5-)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_zellij_current_pane100_v0=''
+        return $__AS
+    fi
+    tab="${__AMBER_VAL_9}"
+    __AF_zellij_current_pane100_v0="${tab}"
+    return 0
+}
+zellij_write_chars__101_v0() {
     local chars=$1
     zellij action write-chars "${chars}"
     __AS=$?
     if [ $__AS != 0 ]; then
-        __AF_zellij_write_chars100_v0=''
+        __AF_zellij_write_chars101_v0=''
         return $__AS
     fi
     zellij action write 13
     __AS=$?
     if [ $__AS != 0 ]; then
-        __AF_zellij_write_chars100_v0=''
+        __AF_zellij_write_chars101_v0=''
         return $__AS
     fi
 }
-log__101_v0() {
+log__102_v0() {
     local log=$1
     get_env_var__73_v0 "HOME" ".env"
-    __AF_get_env_var73_v0__21_16="${__AF_get_env_var73_v0}"
-    local path="${__AF_get_env_var73_v0__21_16}""/.config/abyazelix/debug.log"
+    __AF_get_env_var73_v0__31_16="${__AF_get_env_var73_v0}"
+    local path="${__AF_get_env_var73_v0__31_16}""/.config/abyazelix/debug.log"
     file_exist__27_v0 "${path}"
-    __AF_file_exist27_v0__22_8="$__AF_file_exist27_v0"
-    if [ "$__AF_file_exist27_v0__22_8" != 0 ]; then
+    __AF_file_exist27_v0__32_8="$__AF_file_exist27_v0"
+    if [ "$__AF_file_exist27_v0__32_8" != 0 ]; then
         file_append__30_v0 "${path}" "${log}"
         __AS=$?
         if [ $__AS != 0 ]; then
-            __AF_log101_v0=''
+            __AF_log102_v0=''
             return $__AS
         fi
-        __AF_file_append30_v0__22_26="${__AF_file_append30_v0}"
-        echo "${__AF_file_append30_v0__22_26}" >/dev/null 2>&1
+        __AF_file_append30_v0__32_26="${__AF_file_append30_v0}"
+        echo "${__AF_file_append30_v0__32_26}" >/dev/null 2>&1
     else
         file_write__29_v0 "${path}" "${log}"
         __AS=$?
         if [ $__AS != 0 ]; then
-            __AF_log101_v0=''
+            __AF_log102_v0=''
             return $__AS
         fi
-        __AF_file_write29_v0__23_11="${__AF_file_write29_v0}"
-        echo "${__AF_file_write29_v0__23_11}" >/dev/null 2>&1
+        __AF_file_write29_v0__33_11="${__AF_file_write29_v0}"
+        echo "${__AF_file_write29_v0__33_11}" >/dev/null 2>&1
     fi
+}
+open_new_helix__103_v0() {
+    local path=$1
+    # The current pane is not running helix, so open helix in a new pane
+    zellij action new-pane
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_open_new_helix103_v0=''
+        return $__AS
+    fi
+    sleep 0.4
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_open_new_helix103_v0=''
+        return $__AS
+    fi
+    # Get the working directory
+    dir_exist__26_v0 "${path}"
+    __AF_dir_exist26_v0__41_23="$__AF_dir_exist26_v0"
+    __AMBER_VAL_10=$(dirname "${path}")
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_open_new_helix103_v0=''
+        return $__AS
+    fi
+    local working_dir=$(if [ "$__AF_dir_exist26_v0__41_23" != 0 ]; then echo "${path}"; else echo "${__AMBER_VAL_10}"; fi)
+    zellij_write_chars__101_v0 "cd ${working_dir}; hx ${path} -w ${working_dir}"
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_open_new_helix103_v0=''
+        return $__AS
+    fi
+    __AF_zellij_write_chars101_v0__42_5="$__AF_zellij_write_chars101_v0"
+    echo "$__AF_zellij_write_chars101_v0__42_5" >/dev/null 2>&1
 }
 args=("$0" "$@")
 path="${args[1]}"
-log__101_v0 "${path}"
+log__102_v0 "${path}"
 __AS=$?
 if [ $__AS != 0 ]; then
 
     exit $__AS
 fi
-__AF_log101_v0__28_5="$__AF_log101_v0"
-echo "$__AF_log101_v0__28_5" >/dev/null 2>&1
+__AF_log102_v0__47_5="$__AF_log102_v0"
+echo "$__AF_log102_v0__47_5" >/dev/null 2>&1
 if [ $(
     [ "_${path}" != "_" ]
     echo $?
@@ -179,62 +241,67 @@ if [ $__AS != 0 ]; then
 
     exit $__AS
 fi
-__AF_zellij_current_tab99_v0__31_17="${__AF_zellij_current_tab99_v0}"
-contains__15_v0 "${__AF_zellij_current_tab99_v0__31_17}" " command=\"hx\" "
-__AF_contains15_v0__31_8="$__AF_contains15_v0"
-if [ "$__AF_contains15_v0__31_8" != 0 ]; then
+__AF_zellij_current_tab99_v0__50_17="${__AF_zellij_current_tab99_v0}"
+contains__15_v0 "${__AF_zellij_current_tab99_v0__50_17}" " command=\"hx\" "
+__AF_contains15_v0__50_8="$__AF_contains15_v0"
+if [ "$__AF_contains15_v0__50_8" != 0 ]; then
     # Move focus to the next pane
-    zellij action focus-next-pane
-    __AS=$?
-    if [ $__AS != 0 ]; then
+    limit=1
+    cnt=0
+    while :; do
+        if [ $(echo ${cnt} '>' ${limit} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+            open_new_helix__103_v0 "${path}"
+            __AS=$?
+            if [ $__AS != 0 ]; then
 
-        exit $__AS
-    fi
-    # The current pane is running helix, use zellij actions to open the file
-    zellij action write 27
-    __AS=$?
-    if [ $__AS != 0 ]; then
+                exit $__AS
+            fi
+            __AF_open_new_helix103_v0__56_17="$__AF_open_new_helix103_v0"
+            echo "$__AF_open_new_helix103_v0__56_17" >/dev/null 2>&1
+            break
+        fi
+        cnt=$(echo ${cnt} '+' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+        zellij action focus-next-pane
+        __AS=$?
+        if [ $__AS != 0 ]; then
 
-        exit $__AS
-    fi
-    zellij_write_chars__100_v0 ":open \"${path}\""
-    __AS=$?
-    if [ $__AS != 0 ]; then
+            exit $__AS
+        fi
+        zellij_current_pane__100_v0
+        __AS=$?
+        if [ $__AS != 0 ]; then
 
-        exit $__AS
-    fi
-    __AF_zellij_write_chars100_v0__36_9="$__AF_zellij_write_chars100_v0"
-    echo "$__AF_zellij_write_chars100_v0__36_9" >/dev/null 2>&1
+            exit $__AS
+        fi
+        __AF_zellij_current_pane100_v0__61_25="${__AF_zellij_current_pane100_v0}"
+        contains__15_v0 "${__AF_zellij_current_pane100_v0__61_25}" " command=\"hx\" "
+        __AF_contains15_v0__61_16="$__AF_contains15_v0"
+        if [ "$__AF_contains15_v0__61_16" != 0 ]; then
+            # The current pane is running helix, use zellij actions to open the file
+            zellij action write 27
+            __AS=$?
+            if [ $__AS != 0 ]; then
+
+                exit $__AS
+            fi
+            zellij_write_chars__101_v0 ":open \"${path}\""
+            __AS=$?
+            if [ $__AS != 0 ]; then
+
+                exit $__AS
+            fi
+            __AF_zellij_write_chars101_v0__64_17="$__AF_zellij_write_chars101_v0"
+            echo "$__AF_zellij_write_chars101_v0__64_17" >/dev/null 2>&1
+            break
+        fi
+    done
 else
-    # The current pane is not running helix, so open helix in a new pane
-    zellij action new-pane
+    open_new_helix__103_v0 "${path}"
     __AS=$?
     if [ $__AS != 0 ]; then
 
         exit $__AS
     fi
-    sleep 0.4
-    __AS=$?
-    if [ $__AS != 0 ]; then
-
-        exit $__AS
-    fi
-    # Get the working directory
-    dir_exist__26_v0 "${path}"
-    __AF_dir_exist26_v0__43_27="$__AF_dir_exist26_v0"
-    __AMBER_VAL_8=$(dirname "${path}")
-    __AS=$?
-    if [ $__AS != 0 ]; then
-
-        exit $__AS
-    fi
-    working_dir=$(if [ "$__AF_dir_exist26_v0__43_27" != 0 ]; then echo "${path}"; else echo "${__AMBER_VAL_8}"; fi)
-    zellij_write_chars__100_v0 "cd ${working_dir}; hx ${path} -w ${working_dir}"
-    __AS=$?
-    if [ $__AS != 0 ]; then
-
-        exit $__AS
-    fi
-    __AF_zellij_write_chars100_v0__44_9="$__AF_zellij_write_chars100_v0"
-    echo "$__AF_zellij_write_chars100_v0__44_9" >/dev/null 2>&1
+    __AF_open_new_helix103_v0__69_9="$__AF_open_new_helix103_v0"
+    echo "$__AF_open_new_helix103_v0__69_9" >/dev/null 2>&1
 fi
