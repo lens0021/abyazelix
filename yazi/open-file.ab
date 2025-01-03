@@ -1,11 +1,11 @@
-import { contains, replace_regex } from "std/text"
-import { dir_exist, file_append, file_exist, file_write } from "std/fs"
-import { get_env_var } from "std/env"
+import { replace_regex } from "std/text"
+import { dir_exists, file_append, file_exists, file_write } from "std/fs"
+import { env_var_get } from "std/env"
 
 fun log(log: Text): Null {
     trust {
-        let path = get_env_var("HOME") + "/.config/abyazelix/debug.log"
-        if file_exist(path): file_append(path, log)
+        let path = env_var_get("HOME") + "/.config/abyazelix/debug.log"
+        if file_exists(path): file_append(path, log)
         else: file_write(path, log)
     }
 }
@@ -27,7 +27,7 @@ fun zellij_current_pane(): Text? {
     let pane = $ echo -e "{tab}" | grep -E '^(    )+pane.+focus=true' -A 1000 | grep -E '^(    )+}' --max-count 1 -B 1000 $?
     // Remove indentation
     pane = $ echo -e "{pane}" | cut -d' ' -f5- $?
-    // log("current pane: {pane}")
+    log("current pane: {pane}")
 
     return tab
 }
@@ -42,7 +42,7 @@ fun open_new_helix(path: Text): Null? {
     $ zellij action new-pane $?
     $ sleep 0.4 $?
     // Get the working directory
-    const working_dir = dir_exist(path) then path else $dirname "{path}"$?
+    const working_dir = dir_exists(path) then path else $dirname "{path}"$?
     zellij_write_chars("cd {working_dir}; hx {path} -w {working_dir}")?
 }
 
