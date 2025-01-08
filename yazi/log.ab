@@ -1,0 +1,10 @@
+import { env_var_get } from "std/env"
+import { file_append, file_exists, file_write } from "std/fs"
+
+pub fun log(log: Text): Null {
+    trust {
+        let path = env_var_get("HOME") + "/.config/abyazelix/debug.log"
+        if file_exists(path): file_append(path, log)
+        else: file_write(path, log)
+    }
+}
